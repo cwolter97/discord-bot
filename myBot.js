@@ -70,7 +70,8 @@ bot.on("message", async message => {
 
           });
 
-          console.log("video title: " jsonResponse.items[0].snippet.title);
+          console.log("query: " + query);
+          console.log("video title: " + jsonResponse.items[0].snippet.title);
           console.log("video id: " + video_id);
           console.log("joining channel...");
 

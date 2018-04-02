@@ -54,14 +54,18 @@ bot.on("message", async message => {
       //make request for stuff
       request(options, function (error, response, body) {
         let jsonResponse = JSON.parse(body);
-        console.log(body);
+        //console.log(body);
         video_id = jsonResponse.items[0].id.videoId;
         video_title = jsonResponse.items[0].snippet.title;
         var video_info = new Array(video_id, video_title);
-      });
 
-      console.log(video_info);
-      return video_info;
+        console.log("in call: " + video_info);
+        //return video_info;
+      })
+        .then(video_info => {
+          return video_info;}
+        )
+        .catch(error => console.log(error));
     }
 
     switch(command) {
@@ -76,7 +80,7 @@ bot.on("message", async message => {
           console.log("Making request");
 
           var video_info = searchYoutube(query);
-          console.log(video_info);
+          console.log("out of call: " + video_info);
           var video_id = video_info[0];
           var video_title = video_info[1];
 

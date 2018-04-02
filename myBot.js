@@ -93,8 +93,8 @@ bot.on("message", async message => {
           break;
 
         case `${prefix}novoice`:
-            const voiceChannel = message.member.voiceChannel;
-            voiceChannel.disconnect();
+            var leaving = message.member.voiceChannel;
+            leaving.disconnect();
             break;
 
         case `${prefix}spotify`:

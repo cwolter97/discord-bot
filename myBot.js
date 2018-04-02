@@ -54,6 +54,7 @@ bot.on("message", async message => {
                'q': query,
                'type': 'video'
              }
+          }
 
           console.log("Making request");
 

@@ -54,7 +54,7 @@ bot.on("message", async message => {
                'part': 'snippet',
                'q': query,
                'type': 'video',
-               'auth': yt_api_key
+               'key': yt_api_key
              }
           }
 

@@ -32,6 +32,8 @@ bot.on("message", async message => {
 
     //returns back top video id result
     function searchYoutube(query){
+      const yt_api_key = process.env.youtube_api;
+      
       var request = require("request");
 
       var options = { method: 'GET',
@@ -64,7 +66,6 @@ bot.on("message", async message => {
 
         case `${prefix}youtube`:
           const voiceChannel = message.member.voiceChannel;
-          const yt_api_key = process.env.youtube_api;
           const ytdl = require('ytdl-core');
           const streamOptions = { seek: 0, volume: .5 };
 

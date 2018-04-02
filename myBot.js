@@ -75,6 +75,7 @@ bot.on("message", async message => {
           voiceChannel.join()
             .then(connection => {
               const stream = ytdl('https://www.youtube.com/watch?v=' + video_id, { filter : 'audioonly' });
+              message.channel.send(message.author.username + " requested: " + video_title);
               const dispatcher = connection.playStream(stream, streamOptions);
             })
             .catch(console.error);

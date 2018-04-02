@@ -57,11 +57,7 @@ bot.on("message", async message => {
         //console.log(body);
         video_id = jsonResponse.items[0].id.videoId;
         video_title =jsonResponse.items[0].snippet.title;
-        var video_info[] =
-          {
-            video_id,
-            video_title
-          }
+        var video_info = new Array(video_id, video_title);
       });
 
       return video_info;

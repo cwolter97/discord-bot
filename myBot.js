@@ -75,7 +75,15 @@ bot.on("message", async message => {
             voiceChannel.join()
               .then(connection => {
                 const stream = ytdl('https://www.youtube.com/watch?v=' + video_id, { filter : 'audioonly' });
-                message.channel.send(message.author.username + " requested: " + video_title);
+                //message.channel.send(message.author.username + " requested: " + video_title);
+                let embed = new Discord.RichEmbed()
+                    .setAuthor(message.author.username)
+                    .setDescription("Has Requested: ")
+                    .setColor("#9B59B6")
+                    .addField("Video", video_title)
+
+                message.channel.send(embed);
+
                 const dispatcher = connection.playStream(stream, streamOptions);
               })
               .catch(console.error);
@@ -85,7 +93,8 @@ bot.on("message", async message => {
           break;
 
         case `${prefix}novoice`:
-            message.member.voiceChannel.disconnect();
+            const voiceChannel = message.member.voiceChannel;
+            voiceChannel.disconnect();
             break;
 
         case `${prefix}spotify`:

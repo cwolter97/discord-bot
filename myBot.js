@@ -93,7 +93,7 @@ bot.on("message", async message => {
           break;
 
         case `${prefix}novoice`:
-            const voiceConnection = bot.voiceConnections[0];
+            const voiceConnectionDisconnect = bot.voiceConnections[0];
             voiceConnection.disconnect();
             break;
 

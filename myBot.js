@@ -94,7 +94,7 @@ bot.on("message", async message => {
 
         case `${prefix}novoice`:
             const voiceConnectionDisconnect = bot.voiceConnections[0];
-            voiceConnection.disconnect();
+            voiceConnectionDisconnect.disconnect();
             break;
 
         case `${prefix}spotify`:

@@ -33,7 +33,7 @@ bot.on("message", async message => {
     switch(command) {
 
         case `${prefix}youtube`:
-          console.log("got you msg");
+          const voiceChannel = message.member.voiceChannel;
           const ytdl = require('ytdl-core');
           const streamOptions = { seek: 0, volume: 1 };
           console.log("joining channel...");
@@ -48,7 +48,7 @@ bot.on("message", async message => {
         case `${prefix}spotify`:
             message.channel.send("In Development");
             break;
-            
+
     }
 });
 

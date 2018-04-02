@@ -32,87 +32,25 @@ bot.on("message", async message => {
 
     switch(command) {
 
+        case `${prefix}youtube`:
+          console.log("got you msg");
+          const ytdl = require('ytdl-core');
+          const streamOptions = { seek: 0, volume: 1 };
+          console.log("joining channel...");
+          voiceChannel.join()
+          console.log("getting youtube vid");
+          .then(connection => {
+            const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
+            const dispatcher = connection.playStream(stream, streamOptions);
+          })
+          .catch(console.error);
+          break;
+
         case `${prefix}spotify`:
-
+            message.channel.send("In Development");
             break;
             //the following command was created by JD Stocksett
-        case `${prefix}weather`:
-            console.log("Checking zip");
 
-            let zipCode = messageArray[1];
-
-            console.log(`Zip is ${zipCode}`);
-
-            var request = require("request");
-
-            var options = { method: 'GET',
-              url: 'http://api.openweathermap.org/data/2.5/weather',
-              qs:
-               { zip: `${zipCode},us`,
-                 appid: 'c9b9747a481872999cf199acc6bec4ff',
-                 units: 'imperial' }
-                }
-
-            console.log("Making request");
-
-            request(options, function (error, response, body) {
-              if (error) throw new Error(error);
-
-              console.log(body);
-
-              let jsonResponse = JSON.parse(body);
-
-              message.channel.send(`The weather is currently ${jsonResponse.main.temp} degrees in ${jsonResponse.name}.`);
-            })
-            break;
-            //the following command was created by JD Stocksett
-        case `${prefix}gifme`:
-            let tag = message.content.substring(command.length+1 ,message.content.length);
-
-            console.log(tag);
-
-            var request = require("request");
-
-            var options = { method: 'GET',
-              url: 'http://api.giphy.com/v1/gifs/random',
-              qs: { tag: `${tag}`, api_key: '33RGz8gaeEWlZBnitnrtjD261dzk5iyj' }
-            }
-
-            let msg = await message.channel.send("Generating...");
-
-            request(options, function (error, response, body) {
-                if (error) throw new Error(error);
-
-                let jsonResponse = JSON.parse(body);
-                let embedURL = jsonResponse.data.embed_url;
-                let gifURL = jsonResponse.data.images.original.url;
-
-                let msgEmbed = new Discord.RichEmbed()
-                    .setURL(embedURL)
-                    .setImage(gifURL)
-                    .setTitle(`${message.author.username}'s ${tag} gif:`)
-
-                try{
-                    message.channel.send({embed: msgEmbed});
-                } catch (e) {
-                    console.log(e.stack);
-                }
-                    /*
-                    try {
-                        message.channel.send({embed:{
-                            title:`Your ${tag} gif`,
-                            url:`${embedURL}`,
-                            image: {
-                                "url": `${gifURL}`
-
-                        }}});
-                    } catch(e) {
-                       console.log(e.stack);
-                    }
-                    */
-                msg.delete();
-            });
-            break;
 
     }
 });

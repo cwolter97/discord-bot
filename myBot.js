@@ -38,20 +38,17 @@ bot.on("message", async message => {
           const streamOptions = { seek: 0, volume: 1 };
           console.log("joining channel...");
           voiceChannel.join()
-          console.log("getting youtube vid");
-          .then(connection => {
-            const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-            const dispatcher = connection.playStream(stream, streamOptions);
-          })
-          .catch(console.error);
+            .then(connection => {
+              const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
+              const dispatcher = connection.playStream(stream, streamOptions);
+            })
+            .catch(console.error);
           break;
 
         case `${prefix}spotify`:
             message.channel.send("In Development");
             break;
-            //the following command was created by JD Stocksett
-
-
+            
     }
 });
 

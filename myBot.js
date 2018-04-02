@@ -42,7 +42,7 @@ bot.on("message", async message => {
           const ytdl = require('ytdl-core');
           const streamOptions = { seek: 0, volume: .5 };
 
-          let query = command.substring(prefix + 1, command.length)
+          let query = message.content.substring(prefix + 1, command.length)
 
           var request = require("request");
 
@@ -60,18 +60,19 @@ bot.on("message", async message => {
 
           console.log("Making request");
 
-          var video_url = "https://www.youtube.com/watch?v=vjUqUVrXclE";
+          var video_id = "https://www.youtube.com/watch?v=vjUqUVrXclE";
+          var video_title = ""
 
           request(options, function (error, response, body) {
             let jsonResponse = JSON.parse(body);
             console.log(body);
 
-            video_url = jsonResponse.items[0].id.videoId;
-
+            video_id = jsonResponse.items[0].id.videoId;
+            video_title =jsonResponse.items[0].snippet.title;
           });
 
           console.log("query: " + query);
-          console.log("video title: " + jsonResponse.items[0].snippet.title);
+          console.log("video title: " + video_title);
           console.log("video id: " + video_id);
           console.log("joining channel...");
 

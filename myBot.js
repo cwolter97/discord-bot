@@ -30,13 +30,42 @@ bot.on("message", async message => {
 
     if(!command.startsWith(prefix)) return;
 
+    function searchYoutube(query){
+
+    }
+
     switch(command) {
 
         case `${prefix}youtube`:
           const voiceChannel = message.member.voiceChannel;
           const ytdl = require('ytdl-core');
-          const streamOptions = { seek: 0, volume: 1 };
+          const streamOptions = { seek: 0, volume: .5 };
+
+          let query = command.substring(prefix + 1, command.length)
+
+          var request = require("request");
+
+          var options = { method: 'GET',
+            url: 'https://www.googleapis.com/youtube/v3/search',
+            qs:
+             {
+               'maxResults': '1',
+               'part': 'snippet',
+               'q': query,
+               'type': 'video'
+             }
+
+          console.log("Making request");
+
+          request(options, function (error, response, body) {
+            console.log(body);
+            let jsonResponse = JSON.parse(body);
+            console.log('==============');
+            console.log(body);
+          }
+
           console.log("joining channel...");
+
           voiceChannel.join()
             .then(connection => {
               const stream = ytdl('https://www.youtube.com/watch?v=vjUqUVrXclE', { filter : 'audioonly' });

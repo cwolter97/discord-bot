@@ -30,8 +30,34 @@ bot.on("message", async message => {
 
     if(!command.startsWith(prefix)) return;
 
+    //returns back top video id result
     function searchYoutube(query){
+      var request = require("request");
 
+      var options = { method: 'GET',
+        url: 'https://www.googleapis.com/youtube/v3/search',
+        qs:
+         {
+           'maxResults': '1',
+           'part': 'snippet',
+           'q': query,
+           'type': 'video',
+           'key': yt_api_key
+         }
+      }
+      //default vals
+      var video_id = "vjUqUVrXclE";
+      var video_title = "ayy thats pretty good"
+
+      //make request for stuff
+      request(options, function (error, response, body) {
+        let jsonResponse = JSON.parse(body);
+        //console.log(body);
+        video_id = jsonResponse.items[0].id.videoId;
+        video_title =jsonResponse.items[0].snippet.title;
+      });
+
+      return video_id;
     }
 
     switch(command) {
@@ -44,33 +70,9 @@ bot.on("message", async message => {
 
           let query = message.content.substring(prefix + 1, message.content.length)
 
-          var request = require("request");
-
-          var options = { method: 'GET',
-            url: 'https://www.googleapis.com/youtube/v3/search',
-            qs:
-             {
-               'maxResults': '1',
-               'part': 'snippet',
-               'q': query,
-               'type': 'video',
-               'key': yt_api_key
-             }
-          }
-
           console.log("Making request");
 
-          //default vals
-          var video_id = "vjUqUVrXclE";
-          var video_title = "ayy thats pretty good"
-
-          //make request for stuff
-          request(options, function (error, response, body) {
-            let jsonResponse = JSON.parse(body);
-            //console.log(body);
-            video_id = jsonResponse.items[0].id.videoId;
-            video_title =jsonResponse.items[0].snippet.title;
-          });
+          var video_id = searchYoutube(query);
 
           voiceChannel.join()
             .then(connection => {
@@ -81,8 +83,9 @@ bot.on("message", async message => {
             .catch(console.error);
           break;
 
-        case `${prefix}stop`:
-            voiceChannel.disconnect();
+        case `${prefix}novoice`:
+            message.member.voiceChannel.disconnect();
+            break;
 
         case `${prefix}spotify`:
             message.channel.send("In Development");

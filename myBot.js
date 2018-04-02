@@ -77,8 +77,8 @@ bot.on("message", async message => {
                 const stream = ytdl('https://www.youtube.com/watch?v=' + video_id, { filter : 'audioonly' });
                 //message.channel.send(message.author.username + " requested: " + video_title);
                 let embed = new Discord.RichEmbed()
-                    .setAuthor(message.author.username)
-                    .setDescription("Has Requested: ")
+                    //.setAuthor(message.author.usernam)
+                    .setDescription(message.author.username + " Has Requested: ")
                     .setColor("#9B59B6")
                     .addField("Video", video_title)
 
@@ -93,8 +93,7 @@ bot.on("message", async message => {
           break;
 
         case `${prefix}novoice`:
-            var leaving = message.member.voiceChannel;
-            leaving.disconnect();
+            bot.voice_clients[0].disconnect();
             break;
 
         case `${prefix}spotify`:

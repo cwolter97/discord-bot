@@ -33,7 +33,7 @@ bot.on("message", async message => {
     //returns back top video id result
     function searchYoutube(query){
       const yt_api_key = process.env.youtube_api;
-      
+
       var request = require("request");
 
       var options = { method: 'GET',
@@ -57,9 +57,14 @@ bot.on("message", async message => {
         //console.log(body);
         video_id = jsonResponse.items[0].id.videoId;
         video_title =jsonResponse.items[0].snippet.title;
+        var video_info[] =
+          {
+            video_id,
+            video_title
+          }
       });
 
-      return video_id;
+      return video_info;
     }
 
     switch(command) {
@@ -73,7 +78,9 @@ bot.on("message", async message => {
 
           console.log("Making request");
 
-          var video_id = searchYoutube(query);
+          var video_info = searchYoutube(query);
+          var video_id = video_info[0];
+          var video_title = video_info[1];
 
           voiceChannel.join()
             .then(connection => {

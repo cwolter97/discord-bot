@@ -42,7 +42,7 @@ bot.on("message", async message => {
           const ytdl = require('ytdl-core');
           const streamOptions = { seek: 0, volume: .5 };
 
-          let query = message.content.substring(prefix + 1, command.length)
+          let query = message.content.substring(prefix + 1, message.content.length)
 
           var request = require("request");
 
@@ -60,15 +60,21 @@ bot.on("message", async message => {
 
           console.log("Making request");
 
-          var video_id = "https://www.youtube.com/watch?v=vjUqUVrXclE";
-          var video_title = ""
+          //default vals
+          var video_id = "vjUqUVrXclE";
+          var video_title = "ayy thats pretty good"
 
+          //make request for stuff
           request(options, function (error, response, body) {
             let jsonResponse = JSON.parse(body);
+
             console.log(body);
 
             video_id = jsonResponse.items[0].id.videoId;
             video_title =jsonResponse.items[0].snippet.title;
+
+            console.log("INREQUEST title: " + video_title);
+            console.log("INREQUEST id: " + video_id);
           });
 
           console.log("query: " + query);

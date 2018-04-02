@@ -60,12 +60,8 @@ bot.on("message", async message => {
         var video_info = new Array(video_id, video_title);
 
         console.log("in call: " + video_info);
-        //return video_info;
+        return video_info;
       })
-        .then(video_info => {
-          return video_info;}
-        )
-        .catch(error => console.log(error));
     }
 
     switch(command) {

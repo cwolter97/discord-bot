@@ -32,36 +32,7 @@ bot.on("message", async message => {
 
     //returns back top video id result
     function searchYoutube(query){
-      const yt_api_key = process.env.youtube_api;
 
-      var request = require("request");
-
-      var options = { method: 'GET',
-        url: 'https://www.googleapis.com/youtube/v3/search',
-        qs:
-         {
-           'maxResults': '1',
-           'part': 'snippet',
-           'q': query,
-           'type': 'video',
-           'key': yt_api_key
-         }
-      }
-      //default vals
-      var video_id = "vjUqUVrXclE";
-      var video_title = "ayy thats pretty good"
-
-      //make request for stuff
-      request(options, function (error, response, body) {
-        let jsonResponse = JSON.parse(body);
-        //console.log(body);
-        video_id = jsonResponse.items[0].id.videoId;
-        video_title = jsonResponse.items[0].snippet.title;
-        var video_info = new Array(video_id, video_title);
-
-        console.log("in call: " + video_info);
-        return video_info;
-      })
     }
 
     switch(command) {
@@ -75,18 +46,42 @@ bot.on("message", async message => {
 
           console.log("Making request");
 
-          var video_info = searchYoutube(query);
-          console.log("out of call: " + video_info);
-          var video_id = video_info[0];
-          var video_title = video_info[1];
+          const yt_api_key = process.env.youtube_api;
 
-          voiceChannel.join()
-            .then(connection => {
-              const stream = ytdl('https://www.youtube.com/watch?v=' + video_id, { filter : 'audioonly' });
-              message.channel.send(message.author.username + " requested: " + video_title);
-              const dispatcher = connection.playStream(stream, streamOptions);
-            })
-            .catch(console.error);
+          var request = require("request");
+
+          var options = { method: 'GET',
+            url: 'https://www.googleapis.com/youtube/v3/search',
+            qs:
+             {
+               'maxResults': '1',
+               'part': 'snippet',
+               'q': query,
+               'type': 'video',
+               'key': yt_api_key
+             }
+          }
+          //default vals
+          var video_id = "vjUqUVrXclE";
+          var video_title = "ayy thats pretty good"
+
+          //make request for stuff
+          request(options, function (error, response, body) {
+            let jsonResponse = JSON.parse(body);
+            //console.log(body);
+            video_id = jsonResponse.items[0].id.videoId;
+            video_title = jsonResponse.items[0].snippet.title;
+
+            voiceChannel.join()
+              .then(connection => {
+                const stream = ytdl('https://www.youtube.com/watch?v=' + video_id, { filter : 'audioonly' });
+                message.channel.send(message.author.username + " requested: " + video_title);
+                const dispatcher = connection.playStream(stream, streamOptions);
+              })
+              .catch(console.error);
+          })
+
+
           break;
 
         case `${prefix}novoice`:

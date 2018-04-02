@@ -70,25 +70,18 @@ bot.on("message", async message => {
             //console.log(body);
             video_id = jsonResponse.items[0].id.videoId;
             video_title =jsonResponse.items[0].snippet.title;
-
-            console.log("INREQUEST title: " + video_title);
-            console.log("INREQUEST id: " + video_id);
           });
-
-          console.log("query: " + query);
-          console.log("video title: " + video_title);
-          console.log("video id: " + video_id);
-          console.log("joining channel...");
 
           voiceChannel.join()
             .then(connection => {
-              console.log("INCONNECTION title: " + video_title);
-              console.log("INCONNECTION id: " + video_id);
               const stream = ytdl('https://www.youtube.com/watch?v=' + video_id, { filter : 'audioonly' });
               const dispatcher = connection.playStream(stream, streamOptions);
             })
             .catch(console.error);
           break;
+
+        case `${prefix}stop`:
+            voiceChannel.disconnect();
 
         case `${prefix}spotify`:
             message.channel.send("In Development");

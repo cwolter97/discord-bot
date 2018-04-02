@@ -63,7 +63,7 @@ bot.on("message", async message => {
             let jsonResponse = JSON.parse(body);
             console.log('==============');
             console.log(body);
-          }
+          });
 
           console.log("joining channel...");
 

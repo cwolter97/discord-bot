@@ -38,6 +38,7 @@ bot.on("message", async message => {
 
         case `${prefix}youtube`:
           const voiceChannel = message.member.voiceChannel;
+          const yt_api_key = process.env.youtube_api;
           const ytdl = require('ytdl-core');
           const streamOptions = { seek: 0, volume: .5 };
 
@@ -52,24 +53,28 @@ bot.on("message", async message => {
                'maxResults': '1',
                'part': 'snippet',
                'q': query,
-               'type': 'video'
+               'type': 'video',
+               'auth': yt_api_key
              }
           }
 
           console.log("Making request");
 
+          var video_url = "https://www.youtube.com/watch?v=vjUqUVrXclE";
+
           request(options, function (error, response, body) {
-            console.log(body);
             let jsonResponse = JSON.parse(body);
-            console.log('==============');
             console.log(body);
+
+            video_url = jsonResponse.items.id.videoId;
+
           });
 
           console.log("joining channel...");
 
           voiceChannel.join()
             .then(connection => {
-              const stream = ytdl('https://www.youtube.com/watch?v=vjUqUVrXclE', { filter : 'audioonly' });
+              const stream = ytdl('https://www.youtube.com/watch?v={video_id}', { filter : 'audioonly' });
               const dispatcher = connection.playStream(stream, streamOptions);
             })
             .catch(console.error);

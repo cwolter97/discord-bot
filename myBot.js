@@ -10,23 +10,23 @@ if(typeof process.env.token === 'undefined'){
   environment = 'local';
 }
 
-var twitch_client_id, bot_token, yt_api_key, prefix;
+var twitch_client_id, bot_token, yt_api_key, prefix, interval;
 
 if(environment == 'local'){
   twitch_client_id = botSettings.twitch_api;
   bot_token = botSettings.token;
   yt_api_key = botSettings.youtube_api;
   prefix = botSettings.prefix;
+  interval = botSettings.interval * 1000;
 }else{
   twitch_client_id = process.env.twitch_api;
   bot_token = process.env.token;
   yt_api_key = process.env.youtube_api;
   prefix = process.env.prefix;
+  interval = process.env.interval * 1000;
 }
 
 var darksunlive = false;
-
-interval = 20 * 1000;
 
 function checkStreamStatus(stream_name){
   console.log("checking stream status of: " + stream_name);
@@ -45,6 +45,8 @@ function checkStreamStatus(stream_name){
 
     if(jsonResponse.stream != null){
       darksunlive = true;
+      var rightNow = new Date();
+      var x = rightNow.toISOString();
       //console.log(jsonResponse.stream);
       let embed = new Discord.RichEmbed()
           //.setAuthor(message.author.usernam)
@@ -55,6 +57,7 @@ function checkStreamStatus(stream_name){
           .setTitle(jsonResponse.stream.channel.status)
           .setURL(jsonResponse.stream.channel.url)
           .setImage(jsonResponse.stream.preview.medium)
+          .setTimestamp(x)
 
       let channel = bot.channels.find("name", "general");
       //console.log(channel);
@@ -203,5 +206,6 @@ bot.on("message", async message => {
 
 bot.login(bot_token).then((token) => {
   //checkStreamStatus("darksunlive");
+  checkStreamStatus("PGL_Dota2");
   setInterval(function(){ checkStreamStatus("PGL_Dota2") }, interval);
 }).catch(console.error);

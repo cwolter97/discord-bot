@@ -10,7 +10,60 @@ if(typeof process.env.token === 'undefined'){
   environment = 'local';
 }
 
-const prefix = "!";
+var twitch_client_id, bot_token, yt_api_key, prefix;
+
+if(environment == 'local'){
+  twitch_client_id = botSettings.twitch_api;
+  bot_token = botSettings.token;
+  yt_api_key = botSettings.youtube_api;
+  prefix = botSettings.prefix;
+}else{
+  twitch_client_id = process.env.twitch_api;
+  bot_token = process.env.token;
+  yt_api_key = process.env.youtube_api;
+  prefix = process.env.prefix;
+}
+
+var darksunlive = false;
+
+interval = 20 * 1000;
+
+function checkStreamStatus(stream_name){
+  console.log("checking stream status of: " + stream_name);
+  if(darksunlive == true){ console.log("already live"); return;}
+  var request = require("request");
+
+  var options = { method: 'GET',
+    url: `https://api.twitch.tv/kraken/streams/${stream_name}`,
+    headers: {
+      'Client-ID': twitch_client_id
+    }
+  }
+
+  request(options, function(error, response, body){
+    let jsonResponse = JSON.parse(body);
+
+    if(jsonResponse.stream != null){
+      darksunlive = true;
+      //console.log(jsonResponse.stream);
+      let embed = new Discord.RichEmbed()
+          //.setAuthor(message.author.usernam)
+          .setAuthor(jsonResponse.stream.channel.display_name, jsonResponse.stream.channel.logo)
+          //.setDescription(jsonResponse.stream.channel.display_name + " is streaming: ")
+          .setColor("#9B59B6")
+          .setDescription("**Playing**: " + jsonResponse.stream.game)
+          .setTitle(jsonResponse.stream.channel.status)
+          .setURL(jsonResponse.stream.channel.url)
+          .setImage(jsonResponse.stream.preview.medium)
+
+      let channel = bot.channels.find("name", "general");
+      //console.log(channel);
+      channel.send("Now Live: " + jsonResponse.stream.channel.display_name + "! @here");
+      channel.send(embed);
+    }
+  })
+
+}
 
 const bot = new Discord.Client({disableEveryone: true});
 
@@ -42,6 +95,9 @@ bot.on("message", async message => {
     }
 
     switch(command) {
+        // case `${prefix}ping`:
+        //   message.channel.send(`${message.author.toString()}`);
+        //   break;
 
         case `${prefix}youtube`:
           const voiceChannel = message.member.voiceChannel;
@@ -51,12 +107,6 @@ bot.on("message", async message => {
           let query = message.content.substring(prefix + 1, message.content.length)
 
           console.log("Making request");
-
-          if(environment == 'local'){
-            const yt_api_key = botSettings.youtube_api;
-          }else{
-            const yt_api_key = process.env.youtube_api;
-          }
 
           var request = require("request");
 
@@ -108,12 +158,6 @@ bot.on("message", async message => {
             var request = require("request");
             var channel_name = messageArray[1];
 
-            if(environment == 'local'){
-              var twitch_client_id = botSettings.twitch_api;
-            }else{
-              var twitch_client_id = process.env.twitch_api;
-            }
-
             var options = { method: 'GET',
               url: `https://api.twitch.tv/kraken/streams/${channel_name}`,
               headers: {
@@ -156,8 +200,8 @@ bot.on("message", async message => {
     }
 });
 
-if(environment == 'local'){
-  bot.login(botSettings.token);
-}else{
-  bot.login(process.env.token);
-}
+
+bot.login(bot_token).then((token) => {
+  //checkStreamStatus("darksunlive");
+  setInterval(function(){ checkStreamStatus("PGL_Dota2") }, interval);
+}).catch(console.error);

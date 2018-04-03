@@ -131,7 +131,7 @@ bot.on("message", async message => {
                     .setAuthor(jsonResponse.stream.channel.display_name, jsonResponse.stream.channel.logo)
                     //.setDescription(jsonResponse.stream.channel.display_name + " is streaming: ")
                     .setColor("#9B59B6")
-                    .setDescription("*Playing*: " + jsonResponse.stream.game)
+                    .setDescription("**Playing**: " + jsonResponse.stream.game)
                     .setTitle(jsonResponse.stream.channel.status)
                     .setURL(jsonResponse.stream.channel.url)
                     .setImage(jsonResponse.stream.preview.medium)

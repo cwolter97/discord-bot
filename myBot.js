@@ -1,8 +1,14 @@
 const Discord = require("discord.js");
 //const logger = require('winston');
 //const botSettings = require("./settings.json");
+var environment = 'remote';
 
+var botSettings;
 
+if(typeof process.env.token === 'undefined'){
+  botSettings = require('./settings.json');
+  environment = 'local';
+}
 
 const prefix = "!";
 
@@ -46,7 +52,11 @@ bot.on("message", async message => {
 
           console.log("Making request");
 
-          const yt_api_key = process.env.youtube_api;
+          if(environment == 'local'){
+            const yt_api_key = botSettings.youtube_api;
+          }else{
+            const yt_api_key = process.env.youtube_api;
+          }
 
           var request = require("request");
 
@@ -92,10 +102,53 @@ bot.on("message", async message => {
 
           break;
 
-        case `${prefix}novoice`:
-            message.channel.send("In Development");
+        case `${prefix}status`:
+            if(messageArray.length != 2){ message.channel.send("`useage: !status <channel-name>`"); return;}
+
+            var request = require("request");
+            var channel_name = messageArray[1];
+
+            if(environment == 'local'){
+              var twitch_client_id = botSettings.twitch_api;
+            }else{
+              var twitch_client_id = process.env.twitch_api;
+            }
+
+            var options = { method: 'GET',
+              url: `https://api.twitch.tv/kraken/streams/${channel_name}`,
+              headers: {
+                'Client-ID': twitch_client_id
+              }
+            }
+
+            request(options, function(error, response, body){
+              let jsonResponse = JSON.parse(body);
+
+              if(jsonResponse.stream != null){
+                //console.log(jsonResponse.stream);
+                let embed = new Discord.RichEmbed()
+                    //.setAuthor(message.author.usernam)
+                    .setAuthor(jsonResponse.stream.channel.display_name, jsonResponse.stream.channel.logo)
+                    //.setDescription(jsonResponse.stream.channel.display_name + " is streaming: ")
+                    .setColor("#9B59B6")
+                    .setDescription("*Playing*: " + jsonResponse.stream.game)
+                    .setTitle(jsonResponse.stream.channel.status)
+                    .setURL(jsonResponse.stream.channel.url)
+                    .setImage(jsonResponse.stream.preview.medium)
+
+                message.channel.send(embed);
+              }else{
+                let embed = new Discord.RichEmbed()
+                  .setAuthor(channel_name)
+                  .setColor("#9B59B6")
+                  .setDescription("This channel is offline!")
+                  message.channel.send(embed);
+              }
+            })
+
             break;
 
+        case `${prefix}novoice`:
         case `${prefix}spotify`:
             message.channel.send("In Development");
             break;
@@ -103,5 +156,8 @@ bot.on("message", async message => {
     }
 });
 
-
-bot.login(process.env.token);
+if(environment == 'local'){
+  bot.login(botSettings.token);
+}else{
+  bot.login(process.env.token);
+}
